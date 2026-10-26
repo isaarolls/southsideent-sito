@@ -72,24 +72,38 @@ function closeSheet(){const s=$('#sheet');if(s){s.remove();document.body.style.o
 addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 
 /* ---------- Uscite ---------- */
-function renderCatalog(f='tutti'){
+let catArtist='tutti',catQuery='';
+const norm=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const spotifyLink=u=>u.link||('https://open.spotify.com/search/'+encodeURIComponent(u.titolo.replace(/\s*\(feat\..*?\)/i,'')+' '+u.artista.split(',')[0]));
+function buildFilters(){
+  const box=$('#catFilters');if(!box||typeof USCITE==='undefined'||box.childElementCount)return;
+  const roster=(typeof ARTISTI!=='undefined'?ARTISTI.map(a=>a.nome):[]);
+  const count={};USCITE.forEach(u=>u.artista.split(/,| e /).map(x=>x.trim()).filter(x=>x&&x!=='altri').forEach(x=>count[x]=(count[x]||0)+1));
+  const top=Object.keys(count).sort((x,y)=>(roster.includes(y)-roster.includes(x))||count[y]-count[x]).filter(x=>count[x]>1||roster.includes(x)).slice(0,10);
+  box.innerHTML=['tutti',...top].map(n=>`<button class="chip" type="button" aria-pressed="${n===catArtist}" data-a="${esc(n)}">${n==='tutti'?'Tutti':esc(n)}</button>`).join('');
+  $$('.chip',box).forEach(b=>b.addEventListener('click',()=>{catArtist=b.dataset.a;$$('.chip',box).forEach(x=>x.setAttribute('aria-pressed',x===b));renderCatalog()}));
+  const inp=$('#catSearch');if(inp)inp.addEventListener('input',()=>{catQuery=norm(inp.value.trim());renderCatalog()});
+}
+function renderCatalog(){
   const c=$('#catalog');if(!c||typeof USCITE==='undefined')return;
+  buildFilters();
   const limit=+c.dataset.limit||USCITE.length;c.innerHTML='';
-  const list=USCITE.filter(u=>f==='tutti'||u.formato===f).slice(0,limit);
-  if(!list.length){c.innerHTML=`<p class="muted" style="padding:28px 0">Nessuna uscita in questo formato per ora.</p>`;return}
+  const list=USCITE.filter(u=>(catArtist==='tutti'||norm(u.artista).includes(norm(catArtist)))&&(!catQuery||norm(u.titolo+' '+u.artista).includes(catQuery))).slice(0,limit);
+  const cnt=$('#catCount');if(cnt)cnt.textContent=list.length+(list.length===1?' brano':' brani');
+  if(!list.length){c.innerHTML=`<p class="muted" style="padding:28px 0">Nessun brano trovato. Prova con un altro titolo o artista.</p>`;return}
   list.forEach(u=>{
-    const [y,m]=u.data.split('-');const r=document.createElement('a');const seed=u.titolo+u.data;
-    r.className='row';r.href=u.link;r.target='_blank';r.rel='noopener';
+    const r=document.createElement('a');const seed=u.titolo+u.artista;
+    const when=u.data?(()=>{const [y,m]=u.data.split('-');return MESI[+m-1]+' '+y})():'';
+    r.className='row';r.href=spotifyLink(u);r.target='_blank';r.rel='noopener';
     r.innerHTML=`<span class="meta code">${esc(u.durata||'')}</span>${u.copertina?`<img class="cover" src="${esc(u.copertina)}" alt="" loading="lazy">`:`<canvas class="cover" aria-hidden="true"></canvas>`}
       <span class="t"><b>${esc(u.titolo)}</b><span>${esc(u.artista)}</span></span>
-      <span class="meta">${esc(u.formato)}</span><span class="meta">${MESI[+m-1]} ${y}</span><span class="go">Ascolta ↗</span>`;
+      <span class="meta">${esc(u.formato||'')}</span><span class="meta">${when}</span><span class="go">Ascolta ↗</span>`;
     c.appendChild(r);
     const im=$('img.cover',r);
     if(im)im.addEventListener('error',()=>{const cv=document.createElement('canvas');cv.className='cover';cv.setAttribute('aria-hidden','true');im.replaceWith(cv);drawTile(cv,seed)},{once:true});
     else drawTile($('canvas',r),seed);
   });
 }
-$$('.chip').forEach(b=>b.addEventListener('click',()=>{$$('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));renderCatalog(b.dataset.f)}));
 
 /* ---------- Playlist ---------- */
 function renderPlaylist(){
@@ -175,7 +189,7 @@ if(form)form.addEventListener('submit',e=>{
 });
 
 $$('.yr').forEach(y=>y.textContent=new Date().getFullYear());
-function renderAll(){renderRoster();renderCatalog(($('.chip[aria-pressed="true"]')||{dataset:{f:'tutti'}}).dataset.f);renderPlaylist();renderEvents();drawMap()}
+function renderAll(){renderRoster();renderCatalog();renderPlaylist();renderEvents();drawMap()}
 renderAll();
 const h=location.hash.slice(1);if(h&&$('#rosterGrid:not([data-limit])'))openArtist(h);
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(renderAll,200)});

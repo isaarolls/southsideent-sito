@@ -346,3 +346,10 @@ html,body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.cat-tools{display:flex;flex-wrap:wrap;gap:16px;align-items:end;justify-content:space-between;margin-bottom:18px}
+.search{display:flex;flex-direction:column;gap:8px;flex:1 1 280px;max-width:440px}
+.search input{font:inherit;font-size:17px;color:var(--tufo);background:transparent;border:0;border-bottom:1.5px solid var(--tufo-dim);padding:10px 0;border-radius:0;outline:none;width:100%}
+.search input:focus{border-color:var(--oro)}
+.search input::placeholder{color:var(--tufo-dim)}
+.row .t b{text-transform:none}
+@media(max-width:759px){.row .go{font-size:11px}}
