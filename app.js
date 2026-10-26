@@ -84,6 +84,9 @@ function buildFilters(){
   $$('.chip',box).forEach(b=>b.addEventListener('click',()=>{catArtist=b.dataset.a;$$('.chip',box).forEach(x=>x.setAttribute('aria-pressed',x===b));renderCatalog()}));
   const inp=$('#catSearch');if(inp)inp.addEventListener('input',()=>{catQuery=norm(inp.value.trim());renderCatalog()});
 }
+const SPRITE={src:'copertine.jpg',cols:9,rows:5};
+function spriteCover(i){const c=i%SPRITE.cols,r=Math.floor(i/SPRITE.cols);
+  return `<span class="cover sprite" aria-hidden="true" style="background-image:url(${SPRITE.src});background-size:${SPRITE.cols*100}% ${SPRITE.rows*100}%;background-position:${c/(SPRITE.cols-1)*100}% ${r/(SPRITE.rows-1)*100}%"></span>`}
 function renderCatalog(){
   const c=$('#catalog');if(!c||typeof USCITE==='undefined')return;
   buildFilters();
@@ -95,13 +98,15 @@ function renderCatalog(){
     const r=document.createElement('a');const seed=u.titolo+u.artista;
     const when=u.data?(()=>{const [y,m]=u.data.split('-');return MESI[+m-1]+' '+y})():'';
     r.className='row';r.href=spotifyLink(u);r.target='_blank';r.rel='noopener';
-    r.innerHTML=`<span class="meta code">${esc(u.durata||'')}</span>${u.copertina?`<img class="cover" src="${esc(u.copertina)}" alt="" loading="lazy">`:`<canvas class="cover" aria-hidden="true"></canvas>`}
+    r.innerHTML=`<span class="meta code">${esc(u.durata||'')}</span>${u.copertina?`<img class="cover" src="${esc(u.copertina)}" alt="" loading="lazy">`:u.sprite!=null?spriteCover(u.sprite):`<canvas class="cover" aria-hidden="true"></canvas>`}
       <span class="t"><b>${esc(u.titolo)}</b><span>${esc(u.artista)}</span></span>
       <span class="meta">${esc(u.formato||'')}</span><span class="meta">${when}</span><span class="go">Ascolta ↗</span>`;
     c.appendChild(r);
     const im=$('img.cover',r);
-    if(im)im.addEventListener('error',()=>{const cv=document.createElement('canvas');cv.className='cover';cv.setAttribute('aria-hidden','true');im.replaceWith(cv);drawTile(cv,seed)},{once:true});
-    else drawTile($('canvas',r),seed);
+    if(im)im.addEventListener('error',()=>{
+      if(u.sprite!=null){im.insertAdjacentHTML('afterend',spriteCover(u.sprite));im.remove();return}
+      const cv=document.createElement('canvas');cv.className='cover';cv.setAttribute('aria-hidden','true');im.replaceWith(cv);drawTile(cv,seed)},{once:true});
+    const cv0=$('canvas.cover',r);if(cv0)drawTile(cv0,seed);
   });
 }
 

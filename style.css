@@ -353,3 +353,4 @@ img{max-width:100%}
 .search input::placeholder{color:var(--tufo-dim)}
 .row .t b{text-transform:none}
 @media(max-width:759px){.row .go{font-size:11px}}
+.row .cover.sprite{display:block;background-color:var(--ink-2);background-repeat:no-repeat}
