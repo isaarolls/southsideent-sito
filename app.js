@@ -22,15 +22,19 @@ function drawTile(cv,seed,n=2,alpha=.9){
 }
 
 /* ---------- Artisti ---------- */
+function media(a,cls){
+  return a.foto?`<img class="${cls}" src="${esc(a.foto)}" alt="${esc(a.nome)}" loading="lazy">`:`<canvas class="${cls}" aria-hidden="true"></canvas>`;
+}
+function bioParas(a){return (Array.isArray(a.bio)?a.bio:[a.bio]).filter(Boolean)}
 function renderRoster(){
   const g=$('#rosterGrid');if(!g||typeof ARTISTI==='undefined')return;
   const limit=+g.dataset.limit||ARTISTI.length, full=!g.dataset.limit;
   g.innerHTML='';
   ARTISTI.slice(0,limit).forEach(a=>{
-    const el=document.createElement(full?'button':'a');el.className='artist';
+    const el=document.createElement(full?'button':'a');el.className='artist'+(a.foto?' has-photo':'');
     if(full){el.type='button';el.addEventListener('click',()=>openArtist(a.slug))}else el.href='artisti.html#'+a.slug;
-    el.innerHTML=`<canvas aria-hidden="true"></canvas><span class="tag"><span>${esc(a.genere)}</span><span>${esc(a.quartiere)}</span></span>
-      <h3>${esc(a.nome)}</h3><p>${esc(a.genere)} · ${esc(a.servizi.join(' / '))}</p><span class="open">Scheda →</span>`;
+    el.innerHTML=`${media(a,'art-media')}<span class="tag"><span>${esc(a.genere)}</span><span>${esc(a.quartiere)}</span></span>
+      <h3>${esc(a.nome)}</h3><p>${esc(a.breve||bioParas(a)[0]||'')}</p><span class="open">Scheda →</span>`;
     el._seed=a.slug;g.appendChild(el);
   });
   if(full||g.dataset.join){
@@ -38,26 +42,27 @@ function renderRoster(){
     j.innerHTML=`<span class="eyebrow">Posto libero</span><h3>Il prossimo<br>puoi essere <em>tu</em></h3><span class="btn" style="align-self:flex-start">Invia demo →</span>`;
     g.appendChild(j);
   }
-  $$('.artist',g).forEach(el=>drawTile($('canvas',el),el._seed,4,.55));
+  $$('.artist',g).forEach(el=>{const c=$('canvas',el);if(c)drawTile(c,el._seed,4,.55)});
 }
 function openArtist(slug){
   const a=ARTISTI.find(x=>x.slug===slug);if(!a)return;
   closeSheet();
+  const link=(u,l,c='btn')=>u&&u!=='#'?`<a class="${c}" href="${esc(u)}" target="_blank" rel="noopener">${l} ↗</a>`:'';
   const s=document.createElement('div');s.className='sheet';s.id='sheet';
   s.innerHTML=`<div class="sheet-card" role="dialog" aria-modal="true" aria-label="${esc(a.nome)}">
-    <canvas aria-hidden="true"></canvas>
-    <div class="sheet-body"><button class="sheet-close" aria-label="Chiudi">×</button>
-      <span class="eyebrow">${esc(a.genere)} · ${esc(a.quartiere)}, Palermo</span>
-      <h3>${esc(a.nome)}</h3><p>${esc(a.bio)}</p>
-      <p class="eyebrow">Con Southside: ${esc(a.servizi.join(' · '))}</p>
+    <button class="sheet-close" aria-label="Chiudi">×</button><div class="sheet-media">${media(a,'sheet-img')}</div>
+    <div class="sheet-body">
+      <span class="eyebrow">${esc(a.genere)} · ${esc(a.quartiere)}</span>
+      <h3>${esc(a.nome)}</h3>
+      ${bioParas(a).map(p=>`<p>${esc(p)}</p>`).join('')}
+      ${a.tappe&&a.tappe.length?`<div><p class="eyebrow" style="margin-bottom:8px">Tappe</p><ol class="milestones">${a.tappe.map(t=>`<li><b>${esc(t.anno)}</b><span>${esc(t.testo)}</span></li>`).join('')}</ol></div>`:''}
+      ${a.collab&&a.collab.length?`<div><p class="eyebrow" style="margin-bottom:10px">Ha lavorato con</p><div class="collabs">${a.collab.map(c=>`<span>${esc(c)}</span>`).join('')}</div></div>`:''}
       <div class="sheet-links">
-        <a class="btn" href="${esc(a.spotify)}" target="_blank" rel="noopener">Spotify ↗</a>
-        <a class="btn" href="${esc(a.instagram)}" target="_blank" rel="noopener">Instagram ↗</a>
-        <a class="btn" href="${esc(a.youtube)}" target="_blank" rel="noopener">YouTube ↗</a>
-        <a class="btn solid" href="contatti.html">Booking ↗</a>
+        ${link(a.spotify,'Spotify')}${link(a.instagram,'Instagram')}${link(a.youtube,'YouTube')}
+        <a class="btn solid" href="contatti.html">Booking →</a>
       </div></div></div>`;
   document.body.appendChild(s);document.body.style.overflow='hidden';
-  drawTile($('canvas',s),a.slug,4,.7);
+  const c=$('canvas',s);if(c)drawTile(c,a.slug,4,.7);
   s.addEventListener('click',e=>{if(e.target===s||e.target.closest('.sheet-close'))closeSheet()});
   $('.sheet-close',s).focus();
   try{history.replaceState(null,'','#'+slug)}catch(e){}
@@ -88,9 +93,8 @@ function renderPlaylist(){
   $$('[data-playlist]').forEach(a=>a.href=SITO.playlistUrl);
   const cv=$('#plCover canvas');if(cv)drawTile(cv,'southside-playlist',3,.6);
   const em=$('#spotifyEmbed');
-  if(em&&SITO.playlistId&&!em.firstElementChild){
-    em.hidden=false;
-    em.innerHTML=`<iframe title="Playlist ufficiale Southside Ent su Spotify" src="https://open.spotify.com/embed/playlist/${encodeURIComponent(SITO.playlistId)}?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+  if(em&&SITO.playlistId&&!em.querySelector('iframe')){
+    em.insertAdjacentHTML('afterbegin',`<iframe title="Playlist ufficiale Southside Ent su Spotify" src="https://open.spotify.com/embed/playlist/${encodeURIComponent(SITO.playlistId)}?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`);
   }
 }
 
