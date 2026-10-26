@@ -34,7 +34,10 @@ const ARTISTI = [
      {anno:"2024", testo:"Prima produzione internazionale: «Hakimi», Blasko ft. 8blevrai"},
      {anno:"Ultimo", testo:"«Vis à vis» con 8blevrai, co-prodotto con 2nd Roof"}
    ],
-   servizi:["Records"], instagram:"#", spotify:"#", youtube:"#"},
+   servizi:["Records"],
+   instagram:"https://www.instagram.com/wheres___theplug/",
+   spotify:"https://open.spotify.com/artist/1GnHdsagr2KE4NG74AUI0K",
+   youtube:"#"},
 ];
 
 /* formato: "Singolo" | "EP" | "Album"   data: "AAAA-MM" */
