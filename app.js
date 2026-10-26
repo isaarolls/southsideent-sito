@@ -75,13 +75,18 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 function renderCatalog(f='tutti'){
   const c=$('#catalog');if(!c||typeof USCITE==='undefined')return;
   const limit=+c.dataset.limit||USCITE.length;c.innerHTML='';
-  USCITE.filter(u=>f==='tutti'||u.formato===f).slice(0,limit).forEach(u=>{
-    const [y,m]=u.data.split('-');const r=document.createElement('a');
+  const list=USCITE.filter(u=>f==='tutti'||u.formato===f).slice(0,limit);
+  if(!list.length){c.innerHTML=`<p class="muted" style="padding:28px 0">Nessuna uscita in questo formato per ora.</p>`;return}
+  list.forEach(u=>{
+    const [y,m]=u.data.split('-');const r=document.createElement('a');const seed=u.titolo+u.data;
     r.className='row';r.href=u.link;r.target='_blank';r.rel='noopener';
-    r.innerHTML=`<span class="meta code">${esc(u.cat)}</span><canvas class="cover" aria-hidden="true"></canvas>
+    r.innerHTML=`<span class="meta code">${esc(u.durata||'')}</span>${u.copertina?`<img class="cover" src="${esc(u.copertina)}" alt="" loading="lazy">`:`<canvas class="cover" aria-hidden="true"></canvas>`}
       <span class="t"><b>${esc(u.titolo)}</b><span>${esc(u.artista)}</span></span>
       <span class="meta">${esc(u.formato)}</span><span class="meta">${MESI[+m-1]} ${y}</span><span class="go">Ascolta ↗</span>`;
-    c.appendChild(r);drawTile($('canvas',r),u.cat);
+    c.appendChild(r);
+    const im=$('img.cover',r);
+    if(im)im.addEventListener('error',()=>{const cv=document.createElement('canvas');cv.className='cover';cv.setAttribute('aria-hidden','true');im.replaceWith(cv);drawTile(cv,seed)},{once:true});
+    else drawTile($('canvas',r),seed);
   });
 }
 $$('.chip').forEach(b=>b.addEventListener('click',()=>{$$('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));renderCatalog(b.dataset.f)}));
@@ -112,7 +117,7 @@ function renderEvents(){
 }
 
 /* ---------- Social ---------- */
-$$('[data-social]').forEach(a=>{if(typeof SITO!=='undefined'&&SITO[a.dataset.social])a.href=SITO[a.dataset.social]});
+$$('[data-social]').forEach(a=>{const u=typeof SITO!=='undefined'&&SITO[a.dataset.social];if(u)a.href=u;else(a.closest('li')||a).hidden=true});
 
 /* ---------- Hero: onde sonore ---------- */
 (function(){

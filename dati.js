@@ -10,10 +10,10 @@ const SITO = {
   playlistUrl: "https://open.spotify.com/playlist/5TN6EYTHXtWtYqMBVcEDX1",
   // ID della playlist (la parte dopo /playlist/ nel link). Serve per il player incorporato.
   playlistId: "5TN6EYTHXtWtYqMBVcEDX1",
-  instagram: "https://www.instagram.com/",
-  spotify: "https://open.spotify.com/",
-  youtube: "https://www.youtube.com/",
-  tiktok: "https://www.tiktok.com/",
+  instagram: "https://www.instagram.com/southside__ent/",
+  spotify: "https://open.spotify.com/playlist/5TN6EYTHXtWtYqMBVcEDX1",
+  youtube: "",  // vuoto = nascosto
+  tiktok: "https://www.tiktok.com/@southside__ent",
 };
 
 /* slug = nome breve senza spazi, usato nel link diretto (artisti.html#slug) */
@@ -66,14 +66,18 @@ const ARTISTI = [
    youtube:"#"},
 ];
 
-/* formato: "Singolo" | "EP" | "Album"   data: "AAAA-MM" */
+/* formato: "Singolo" | "EP" | "Album"   data: "AAAA-MM"
+   copertina: link dell'immagine di copertina (facoltativo). Le più recenti vanno in alto. */
 const USCITE = [
-  {cat:"SSE-006", titolo:"Titolo uscita", artista:"Nome Artista", formato:"Singolo", data:"2026-10", link:"#"},
-  {cat:"SSE-005", titolo:"Titolo uscita", artista:"Nome Artista", formato:"EP", data:"2026-07", link:"#"},
-  {cat:"SSE-004", titolo:"Titolo uscita", artista:"Nome Artista", formato:"Singolo", data:"2026-05", link:"#"},
-  {cat:"SSE-003", titolo:"Titolo uscita", artista:"Nome Artista", formato:"Album", data:"2026-02", link:"#"},
-  {cat:"SSE-002", titolo:"Titolo uscita", artista:"Nome Artista", formato:"Singolo", data:"2025-11", link:"#"},
-  {cat:"SSE-001", titolo:"Titolo uscita", artista:"Nome Artista", formato:"Singolo", data:"2025-09", link:"#"},
+  {titolo:"FAMIGLIA", artista:"La Flèche, KikkoVFP", formato:"Singolo", data:"2026-09", durata:"2:35",
+   copertina:"https://i.scdn.co/image/ab67616d0000b2731be2bc829346233104239f2e",
+   link:"https://open.spotify.com/track/7gA6ngwxWZCpYsEFBS1rOT"},
+  {titolo:"Normale", artista:"8blevrai", formato:"Singolo", data:"2026-09", durata:"",
+   copertina:"https://i.scdn.co/image/ab67616d0000b273bc59ce49762d7d435320ebdc",
+   link:"https://open.spotify.com/album/3Z2sukcWDfPwxvPUHbcgAW"},
+  {titolo:"VITA NELLE BANLIEUE", artista:"La Flèche, KikkoVFP", formato:"Singolo", data:"2026-04", durata:"2:47",
+   copertina:"https://i.scdn.co/image/ab67616d0000b273f6ebd7e783e2402a816b1825",
+   link:"https://open.spotify.com/track/0vxq0Nc6NdBerCBdntbSFS"},
 ];
 
 /* Brani mostrati nella pagina Playlist (anteprima testuale) */
