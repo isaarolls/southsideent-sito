@@ -56,6 +56,7 @@ function openArtist(slug){
       <h3>${esc(a.nome)}</h3>
       ${bioParas(a).map(p=>`<p>${esc(p)}</p>`).join('')}
       ${a.tappe&&a.tappe.length?`<div><p class="eyebrow" style="margin-bottom:8px">Tappe</p><ol class="milestones">${a.tappe.map(t=>`<li><b>${esc(t.anno)}</b><span>${esc(t.testo)}</span></li>`).join('')}</ol></div>`:''}
+      ${a.galleria&&a.galleria.length?`<div class="gallery">${a.galleria.map(g=>`<img src="${esc(g)}" alt="${esc(a.nome)}" loading="lazy">`).join('')}</div>`:''}
       ${a.collab&&a.collab.length?`<div><p class="eyebrow" style="margin-bottom:10px">Ha lavorato con</p><div class="collabs">${a.collab.map(c=>`<span>${esc(c)}</span>`).join('')}</div></div>`:''}
       <div class="sheet-links">
         ${link(a.spotify,'Spotify')}${link(a.instagram,'Instagram')}${link(a.youtube,'YouTube')}

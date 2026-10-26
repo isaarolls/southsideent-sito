@@ -19,6 +19,32 @@ const SITO = {
 /* slug = nome breve senza spazi, usato nel link diretto (artisti.html#slug) */
 /* foto: nome del file immagine caricato accanto alle pagine (lascia "" se non c'è) */
 const ARTISTI = [
+  {slug:"lafleche", nome:"La Flèche", genere:"Rap", quartiere:"Sperone · classe 2001",
+   foto:"lafleche.jpg", galleria:["lafleche-2.jpg"],
+   breve:"La voce dello Sperone. Racconta la periferia palermitana con testi crudi e autentici.",
+   bio:[
+     "La Flèche (Palermo, 2001) è un rapper nato e cresciuto allo Sperone, quartiere periferico di Palermo spesso al centro delle cronache. Nella sua musica racconta le difficoltà e le speranze della vita di quartiere, con un quadro autentico e senza forzature.",
+     "È legato a Southside fin dagli inizi. Nonostante la giovane età si è fatto notare per la sua prolificità e per i live, che gli hanno permesso di consolidare la sua presenza sulla scena rap italiana ed essere oggi una delle voci emergenti più rappresentative del rap siciliano.",
+     "I suoi testi affrontano le contraddizioni della società dal punto di vista di chi vive in contesti difficili. Il suo stile unisce narrazione e introspezione, con un legame forte con le radici palermitane, portate in un contesto nazionale."
+   ],
+   collab:["Achille G","Skugnizz","wherestheplug","Wave Off","3tr3","Real Talk","Ohdio"],
+   servizi:["Records"],
+   instagram:"https://www.instagram.com/lafleche.pa/",
+   spotify:"https://open.spotify.com/artist/64FfdZrhEAVBq0fdEaoO7r",
+   youtube:"#"},
+  {slug:"ohdio", nome:"Ohdio", genere:"Rap", quartiere:"Sperone · classe 2001",
+   foto:"ohdio.jpg", galleria:["ohdio-2.jpg"],
+   breve:"Ohdio come l'odio che porta dentro. Rap dallo Sperone, ossessionato dal numero 27.",
+   bio:[
+     "Ohdio è un rapper palermitano, nato e cresciuto allo Sperone, quartiere popolare della città. Il suo nome viene dall'odio che porta dentro, segnato da un'infanzia difficile e da un carattere forte che lo spinge a battersi sempre contro gli ostacoli.",
+     "Classe 2001, ha una passione per il cinema e la musica e ha collezionato diverse comparse in televisione.",
+     "Ossessionato dal numero 27, si aspetta soltanto tre cose: il successo, un contatto con gli UFO e la morte."
+   ],
+   collab:["La Flèche"],
+   servizi:["Records"],
+   instagram:"https://www.instagram.com/ohdio27/",
+   spotify:"https://open.spotify.com/artist/6QmezjlRTHVSNJwbEPooqU",
+   youtube:"#"},
   {slug:"wherestheplug", nome:"wherestheplug", genere:"Producer", quartiere:"Palermo · classe '95",
    foto:"wherestheplug.jpg",
    breve:"Producer palermitano. Beat visionari, influenze diverse, l'anima di una terra di contaminazioni.",
